@@ -24,4 +24,8 @@ class UDPServer {
             serverSocket.send(sendPacket);
         }
     }
+
+    public static int generateCheckSum() {
+
+    }
 }
