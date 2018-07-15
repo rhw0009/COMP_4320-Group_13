@@ -3,6 +3,7 @@ package com;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class UDPClient {
     public static void main(String args[]) throws Exception
@@ -56,7 +57,7 @@ public class UDPClient {
         Vector packetList = new Vector(0);
         while (!eof) {  //Receive packets
             clientSocket.receive(receivePacket);
-            if (receivePacket.length == 1 && receivePacket.buf == NULL) eof = true;
+            if (receivePacket.getLength() == 1 && receivePacket.getData() == null) eof = true;
             else{
                 randStream = rng.ints(2, 1, 101); //Generates 2 random numbers [1,100]; first is chance to corrupt, second is used to determine number of corrupt bits
                 randArray = randStream.toArray();
@@ -72,16 +73,19 @@ public class UDPClient {
         clientSocket.close();
     }
 
-    public static DatagramPacket gremlin(DatagramPacket packet, int distribution) {
+    public static DatagramPacket gremlin(DatagramPacket packetIn, int distribution) {
+        DatagramPacket packet = packetIn;
         int numToCorrupt;
         if (distribution > 50) numToCorrupt = 1;
         else if (distribution > 20) numToCorrupt = 2;
         else numToCorrupt = 3;
-        Random rng = new Rand();
+        Random rng = new Random();
         boolean noDuplicates = true;
+        int[] randArray;
+        IntStream randStream;
         while (noDuplicates) {
-            randStream = rng.ints(numToCorrupt, 0, packet.length);
-            randArray = randStream.toArray;
+            randStream = rng.ints(numToCorrupt, 0, packet.getLength());
+            randArray = randStream.toArray();
             for (int i = 0; i < numToCorrupt; i++) {
                 for (int j = i + 1; j < numToCorrupt; j++) {
                     if (randArray[i] == randArray[j]) {
@@ -90,6 +94,21 @@ public class UDPClient {
                 }
             }
         }
+        byte[] packetData = packet.getData();
+        byte dataByte;
+        int dataInt;
+        byte ones = 0b1111111;
+        byte zeroes = 0b00000000;
+        for (int i = 0; i < randArray.length; i++) {
+            int byteIndex = randArray[i];
+            dataByte = packetData[i];
+            dataInt = (int)dataByte;
+            dataInt = dataInt ^ ones;
+            dataInt = dataInt ^ zeroes;
+            packetData[i] = (byte)dataInt;
+        }
+        packet.setData(packetData);
+        return packet;
     }
 
     public static void detectError() {
