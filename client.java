@@ -1,9 +1,12 @@
 import java.io.*;
 import java.net.*;
 
-class UDPClient {
+public class UDPClient {
     public static void main(String args[]) throws Exception
     {
+        //Testing Commit
+        System.out.println("Hello World!");
+
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
         DatagramSocket clientSocket = new DatagramSocket();
         InetAddress IPAddress = InetAddress.getByName("hostname");
