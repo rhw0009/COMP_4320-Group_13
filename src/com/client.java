@@ -10,16 +10,27 @@ public class UDPClient {
         //Get corruption chance chanceToCorrupt
         double chanceToCorrupt = 0; //temp
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-        DatagramSocket clientSocket = new DatagramSocket();
+        DatagramSocket clientSocket = new DatagramSocket(10051);
         InetAddress IPAddress = InetAddress.getByName("hostname");
 
         byte[] sendData = new byte[1024];
         byte[] receiveData = new byte[1024];
+        byte[] receiveEndData = new byte[1];
+
+        //boolean receiveComplete = false;
+        //Sends HTTP connection request to the server.
+        URL url = new URL("http://server.com");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET TestFile.html HTTP/1.0");
+        // Allows user to send custom message to the server.
+
         String sentence = inFromUser.readLine();
         sendData = sentence.getBytes();
 
+        System.out.println("Sending request method to server...");
         DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 10048);
         clientSocket.send(sendPacket);
+        
         //Print send
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         boolean eof = false;
