@@ -30,7 +30,22 @@ public class UDPClient {
         System.out.println("Sending request method to server...");
         DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 10048);
         clientSocket.send(sendPacket);
-        
+
+        Scanner sc = new Scanner(System.in);
+        double corruptionValue;
+        do {
+            System.out.println("Please enter the chance for a packet to be corrupted(Between 0.0 - 1.0: )");
+            while (!sc.hasNextDouble()) {
+                System.out.println("Please Enter An Accepted Value...");
+                sc.next();
+            }
+            corruptionValue = sc.nextInt();
+        } while (corruptionValue < 0.0 || corruptionValue > 1.0);
+        System.out.println("Applying corruption to packets...");
+
+        System.out.println(sc.nextLine());
+
+
         //Print send
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         boolean eof = false;
@@ -58,19 +73,19 @@ public class UDPClient {
     }
 
     public static DatagramPacket gremlin(DatagramPacket packet, int distribution) {
-        numToCorrupt;
+        int numToCorrupt;
         if (distribution > 50) numToCorrupt = 1;
         else if (distribution > 20) numToCorrupt = 2;
         else numToCorrupt = 3;
         Random rng = new Rand();
-        noDuplicates = true;
+        boolean noDuplicates = true;
         while (noDuplicates) {
             randStream = rng.ints(numToCorrupt, 0, packet.length);
             randArray = randStream.toArray;
             for (int i = 0; i < numToCorrupt; i++) {
                 for (int j = i + 1; j < numToCorrupt; j++) {
                     if (randArray[i] == randArray[j]) {
-                        noDuplicates == false;
+                        noDuplicates = false;
                     }
                 }
             }
