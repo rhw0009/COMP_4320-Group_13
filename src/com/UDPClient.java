@@ -81,7 +81,7 @@ public class UDPClient {
         else numToCorrupt = 3;
         Random rng = new Random();
         boolean noDuplicates = true;
-        int[] randArray;
+        int[] randArray = {0};
         IntStream randStream;
         while (noDuplicates) {
             randStream = rng.ints(numToCorrupt, 0, packet.getLength());
