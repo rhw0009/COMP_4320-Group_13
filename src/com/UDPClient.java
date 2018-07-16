@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.stream.IntStream;
 import java.lang.*;
 
+
 public class UDPClient {
     public static void main(String args[]) throws Exception {
         //Get corruption chance chanceToCorrupt
@@ -20,9 +21,9 @@ public class UDPClient {
 
         //boolean receiveComplete = false;
         //Sends HTTP connection request to the server.
-        URL url = new URL("http://server.com");
+        URL url = new URL("http://localhost:63342/COMP_4320-Group_13/Project/com/ExampleWebPage.html?_ijt=d877oij3mnb144kuhh7f29u8aj");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET TestFile.html HTTP/1.0");
+        con.setRequestMethod("GET ExampleWebPage.html HTTP/1.0");
 
         // Allows user to send custom message to the server.
         String sentence = inFromUser.readLine();
