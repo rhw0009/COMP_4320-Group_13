@@ -10,6 +10,7 @@ class UDPServer {
         byte[] receiveData = new byte[1024];
         byte[] sendData  = new byte[1024];
         byte[] endData = new byte[1];
+        int checksum = 1024;
         endData = null;
 
 
@@ -24,8 +25,8 @@ class UDPServer {
         int port = receivePacket.getPort();
         String capitalizedSentence = ("http/1.0 200 document follows\r\n " +
                     "content-type: text/plain \r\n " +
-                    "Content Length: 256 bytes \r\n\r\n" +
-                    "Data");
+                    "Content Length: 1024 bytes \r\n\r\n" +
+                    "Checksum: " + checksum);
         sendData = capitalizedSentence.getBytes();
 
         System.out.println("responding to the clients request...");
