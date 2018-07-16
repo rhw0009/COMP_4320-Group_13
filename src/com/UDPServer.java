@@ -2,6 +2,7 @@ package com;
 
 import java.io.*;
 import java.net.*;
+import java.util.Vector;
 
 class UDPServer {
     public static void main(String args[]) throws Exception
@@ -56,5 +57,30 @@ class UDPServer {
             checksum += packet.getData()[i];
         }
         return checksum;
+    }
+
+    public static Vector<String> generatePackets(String filename) {
+        Vector<String> output = new Vector<String>(0);
+        try {
+            FileInputStream file;
+            try {
+                file = new FileInputStream(filename);
+            } catch (FileNotFoundException fileNotFound) {
+                System.out.println("Error: file not found.");
+                return null;
+            }
+            boolean eof = false;
+            int numRead = 0;
+            byte[] currentPacket = {};
+            while (!eof) {
+                numRead = file.read(currentPacket, 0, 256);
+                if (numRead < 256) eof = true;
+                output.add(currentPacket.toString());
+            }
+            output.add("\0"); //add eof null packet
+        } catch(IOException ioExcept) {
+            return null;
+        }
+        return output;
     }
 }

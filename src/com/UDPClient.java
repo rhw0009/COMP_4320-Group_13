@@ -55,7 +55,7 @@ public class UDPClient {
         int[] randArray = {0};
         int sequenceNum = 0;
         //Receive header
-        Vector packetList = new Vector(0);
+        Vector<DatagramPacket> packetList = new Vector(0);
         while (!eof) {  //Receive packets
             clientSocket.receive(receivePacket);
             if (receivePacket.getLength() == 1 && receivePacket.getData() == null) eof = true;
