@@ -4,10 +4,10 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.stream.IntStream;
+import java.lang.*;
 
 public class UDPClient {
-    public static void main(String args[]) throws Exception
-    {
+    public static void main(String args[]) throws Exception {
         //Get corruption chance chanceToCorrupt
         double chanceToCorrupt = 0; //temp
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
@@ -52,22 +52,24 @@ public class UDPClient {
         boolean eof = false;
         Random rng = new Random();
         IntStream randStream;
-        int[] randArray;
+        int[] randArray = {0};
+        int sequenceNum = 0;
         //Receive header
         Vector packetList = new Vector(0);
         while (!eof) {  //Receive packets
             clientSocket.receive(receivePacket);
             if (receivePacket.getLength() == 1 && receivePacket.getData() == null) eof = true;
-            else{
+            else {
                 randStream = rng.ints(2, 1, 101); //Generates 2 random numbers [1,100]; first is chance to corrupt, second is used to determine number of corrupt bits
                 randArray = randStream.toArray();
                 if (randArray[0] <= chanceToCorrupt * 100) {
                     receivePacket = gremlin(receivePacket, randArray[1]);
                 }
+                errorDetected(receivePacket, sequenceNum);
             }
             packetList.add(receivePacket);
+            sequenceNum++;
         }
-        //Error detection goes here
         String modifiedSentence = new String(receivePacket.getData());
         System.out.println("FROM SERVER:" + modifiedSentence); //Print receive
         clientSocket.close();
@@ -101,17 +103,31 @@ public class UDPClient {
         byte zeroes = 0b00000000;
         for (int i = 0; i < randArray.length; i++) {
             int byteIndex = randArray[i];
-            dataByte = packetData[i];
-            dataInt = (int)dataByte;
+            dataByte = packetData[byteIndex];
+            dataInt = (int) dataByte;
             dataInt = dataInt ^ ones;
             dataInt = dataInt ^ zeroes;
-            packetData[i] = (byte)dataInt;
+            packetData[i] = (byte) dataInt;
         }
         packet.setData(packetData);
         return packet;
     }
 
-    public static void detectError() {
-
+    public static boolean errorDetected(DatagramPacket packet, int sequenceNum) {
+        int checksum = 0;
+        int cSumStartIndex = (packet.getData()).toString().indexOf("Checksum: ");
+        cSumStartIndex += 10;
+        int cSumEndIndex = (packet.getData()).toString().indexOf(' ', cSumStartIndex);
+        String cSumString = (packet.getData()).toString().substring(cSumStartIndex, cSumEndIndex);
+        int correctSum = Integer.parseInt(cSumString);
+        for (int i = 0; i < packet.getLength(); i++) {
+            checksum += packet.getData()[i];
+        }
+        if (checksum == correctSum) {
+            return false;
+        } else {
+            System.out.println("Error detected in packet " + sequenceNum);
+            return true;
+        }
     }
 }
