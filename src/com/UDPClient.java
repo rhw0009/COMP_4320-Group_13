@@ -23,8 +23,8 @@ public class UDPClient {
         URL url = new URL("http://server.com");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET TestFile.html HTTP/1.0");
-        // Allows user to send custom message to the server.
 
+        // Allows user to send custom message to the server.
         String sentence = inFromUser.readLine();
         sendData = sentence.getBytes();
 

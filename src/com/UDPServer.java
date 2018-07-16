@@ -14,7 +14,7 @@ class UDPServer {
         int checksum = 1024;
         endData = null;
 
-
+        //Should receive the first packet that the client sends
         System.out.println("Receiving Data from client... ");
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         serverSocket.receive(receivePacket);
@@ -22,21 +22,30 @@ class UDPServer {
         String sentence = new String(receivePacket.getData());
         InetAddress IPAddress = receivePacket.getAddress();
 
-        System.out.println("getting the clients port number..");
+        // Should print out whatever data the client first sends.
+        System.out.println(receiveData.toString());
+
+        System.out.println("getting the clients port number in order to return the message.");
         int port = receivePacket.getPort();
-        String capitalizedSentence = ("http/1.0 200 document follows\r\n " +
+
+
+        // This is the packet header. This should turn the String into bytes ready to send via datagram sendPacket
+        String packetHeader = ("http/1.0 200 document follows\r\n " +
                     "content-type: text/plain \r\n " +
                     "Content Length: 1024 bytes \r\n\r\n" +
                     "Checksum: " + checksum);
-        sendData = capitalizedSentence.getBytes();
+        sendData = packetHeader.getBytes();
 
         System.out.println("responding to the clients request...");
 
+
+        // Loop that is supposed to split the response packet into 4 and sends back to the client
         int i = 0;
          while(i < 4)
          {
              DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length / 4, IPAddress, port);
              serverSocket.send(sendPacket);
+             getChecksum(sendPacket);
              i++;
          }
 
