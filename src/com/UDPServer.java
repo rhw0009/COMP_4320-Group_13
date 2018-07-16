@@ -49,4 +49,12 @@ class UDPServer {
             serverSocket.close();
 
     }
+
+    public static int getChecksum(DatagramPacket packet) {
+        int checksum = 0;
+        for (int i = 0; i < packet.getLength(); i++) {
+            checksum += packet.getData()[i];
+        }
+        return checksum;
+    }
 }
