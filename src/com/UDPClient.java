@@ -48,10 +48,9 @@ public class UDPClient {
                 System.out.println("Invalid input; please enter a value between 0.0 and 1.0:");
             }
         }
-        System.out.println("Applying corruption to packets...");
-
+        System.out.println("Applying a " + chanceToCorrupt + " chance of corruption to packets...");
         //System.out.println(sc.nextLine());
-
+        System.out.println("Verifying checksum of corrupted packets...");
 
         //Print send
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -62,6 +61,8 @@ public class UDPClient {
         int sequenceNum = 0;
         //Receive header
         Vector<DatagramPacket> packetList = new Vector(0);
+        System.out.println("Response received!");
+        System.out.println("Closing the Server Client Connection Thank you!");
         while (!eof) {  //Receive packets
             clientSocket.receive(receivePacket);
             if (receivePacket.getLength() == 1 && receivePacket.getData() == null) eof = true;
@@ -76,6 +77,7 @@ public class UDPClient {
             packetList.add(receivePacket);
             sequenceNum++;
         }
+
         String modifiedSentence = new String(receivePacket.getData());
         System.out.println("FROM SERVER:" + modifiedSentence); //Print receive
         clientSocket.close();
@@ -135,5 +137,13 @@ public class UDPClient {
             System.out.println("Error detected in packet " + sequenceNum);
             return true;
         }
+    }
+
+    public static int getChecksum(DatagramPacket packet) {
+        int checksum = 0;
+        for (int i = 0; i < packet.getLength(); i++) {
+            checksum += packet.getData()[i];
+        }
+        return checksum;
     }
 }
