@@ -7,7 +7,7 @@ import java.util.Vector;
 class UDPServer {
     public static void main(String args[]) throws IOException
     {
-        DatagramSocket serverSocket = new DatagramSocket(8080);
+        DatagramSocket serverSocket = new DatagramSocket(10050);
         byte[] receiveData = new byte[1024];
         byte[] sendData  = new byte[1024];
         byte[] endData = null;
@@ -82,7 +82,7 @@ class UDPServer {
             System.out.println("Sending the Null packet to identify the end of the message...");
 
 
-         DatagramPacket sendEndPacket = new DatagramPacket(endData, endData.length, IPAddress, 8081);
+         DatagramPacket sendEndPacket = new DatagramPacket(endData, endData.length, IPAddress, 10051);
          serverSocket.send(sendEndPacket);
          serverSocket.close();
 

@@ -11,8 +11,8 @@ public class UDPClient {
     public static void main(String args[]) throws Exception {
 
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-        DatagramSocket clientSocket = new DatagramSocket(8081);
-        InetAddress IPAddress = InetAddress.getByName("localhost");
+        DatagramSocket clientSocket = new DatagramSocket(10051);
+        InetAddress IPAddress = InetAddress.getByName("131.204.14.55");
 
         byte[] sendData = new byte[1024];
         byte[] receiveData = new byte[1024];
@@ -21,7 +21,7 @@ public class UDPClient {
         //boolean receiveComplete = false;
         //Sends HTTP connection request to the server.
         System.out.println("Sending HTTP request to Server port...");
-        URL url = new URL("HTTP", "localhost",8080,"ExampleWebPage.html");
+        URL url = new URL("HTTP", "localhost",10050,"ExampleWebPage.html");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");// ExampleWebPage.html HTTP/1.0");
         con.setReadTimeout(15*1000);
@@ -32,7 +32,7 @@ public class UDPClient {
         sendData = sentence.getBytes();
 
         System.out.println("Sending request method to server...");
-        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 8080);
+        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 10050);
         clientSocket.send(sendPacket);
 
         double chanceToCorrupt = 0;
