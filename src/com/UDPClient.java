@@ -32,7 +32,7 @@ public class UDPClient {
         sendData = sentence.getBytes();
 
         System.out.println("Sending request method to server...");
-        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 10048);
+        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 8080);
         clientSocket.send(sendPacket);
 
         double chanceToCorrupt = 0;
@@ -50,7 +50,7 @@ public class UDPClient {
         }
         System.out.println("Applying corruption to packets...");
 
-        System.out.println(sc.nextLine());
+        //System.out.println(sc.nextLine());
 
 
         //Print send

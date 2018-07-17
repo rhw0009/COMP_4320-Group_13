@@ -19,9 +19,10 @@ class UDPServer {
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         serverSocket.receive(receivePacket);
 
-        URL url = new URL("HTTP","localhost","8081","http://localhost:63342/COMP_4320-Group_13/Project/com/ExampleWebPage.html?_ijt=d877oij3mnb144kuhh7f29u8aj");
+        URL url = new URL("HTTP","localhost",8081,"ExampleWebPage.html");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.getRequestMethod();
+        String requestMethod = con.getRequestMethod();
+
 
         String sentence = new String(receivePacket.getData());
         InetAddress IPAddress = receivePacket.getAddress();
@@ -58,7 +59,7 @@ class UDPServer {
             // it transmits 1 byte(NULL character) that indicates the end of the file.
             // It will then close the file.
             System.out.println("Sending the 1 byte packet to identify the end of the message...");
-            DatagramPacket sendEndPacket = new DatagramPacket(endData, endData.length, IPAddress, port);
+            DatagramPacket sendEndPacket = new DatagramPacket(endData, endData.length, IPAddress, 8081);
             serverSocket.send(sendEndPacket);
             serverSocket.close();
 
