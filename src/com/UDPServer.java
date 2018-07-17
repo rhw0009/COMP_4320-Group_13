@@ -61,7 +61,7 @@ class UDPServer {
              }
              dataArray[packetHeader.length()] = ' ';
              dataIndex = 0;
-             for (int j = arrayLength + 1; i < dataArray.length; i++) {
+             for (int j = packetHeader.length() + 1; i < dataArray.length; i++) {
                  dataArray[j] = sendPacket.getData()[dataIndex];
                  dataIndex++;
              }
