@@ -10,8 +10,6 @@ import java.lang.*;
 public class UDPClient {
     public static void main(String args[]) throws Exception {
 
-        //Get corruption chance chanceToCorrupt
-        double chanceToCorrupt = 0; //temp
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
         DatagramSocket clientSocket = new DatagramSocket(8081);
         InetAddress IPAddress = InetAddress.getByName("localhost");
@@ -37,16 +35,19 @@ public class UDPClient {
         DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 10048);
         clientSocket.send(sendPacket);
 
+        double chanceToCorrupt = 0;
         Scanner sc = new Scanner(System.in);
-        double corruptionValue;
-        do {
-            System.out.println("Please enter the chance for a packet to be corrupted(Between 0.0 - 1.0: )");
-            while (!sc.hasNextDouble()) {
-                System.out.println("Please Enter An Accepted Value...");
-                sc.next();
+        System.out.println("Please enter the chance for a packet to be corrupted as a value between 0.0 and 1.0:");
+        boolean validInput = false;
+        while (!validInput) {
+            chanceToCorrupt = sc.nextDouble();
+            if (chanceToCorrupt >= 0 && chanceToCorrupt <= 1) {
+                validInput = true;
             }
-            corruptionValue = sc.nextInt();
-        } while (corruptionValue < 0.0 || corruptionValue > 1.0);
+            else {
+                System.out.println("Invalid input; please enter a value between 0.0 and 1.0:");
+            }
+        }
         System.out.println("Applying corruption to packets...");
 
         System.out.println(sc.nextLine());
