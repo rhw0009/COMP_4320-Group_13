@@ -18,7 +18,8 @@ public class UDPClient {
 
         //boolean receiveComplete = false;
         //Sends HTTP connection request to the server.
-        URL url = new URL("HTTP","localhost", 8080, "ExampleWebPage.html");
+        //URL url = new URL("HTTP","localhost", 8080, "ExampleWebPage.html");
+        URL url = new URL("localhost");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         //con.setRequestProperty("ExampleWebPage.html", "HTTP/1.0");
         con.setRequestMethod("GET");
