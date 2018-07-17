@@ -5,9 +5,9 @@ import java.net.*;
 import java.util.Vector;
 
 class UDPServer {
-    public static void main(String args[]) throws Exception
+    public static void main(String args[]) throws IOException
     {
-        DatagramSocket serverSocket = new DatagramSocket(10048);
+        DatagramSocket serverSocket = new DatagramSocket(8080);
         byte[] receiveData = new byte[1024];
         byte[] sendData  = new byte[1024];
         byte[] endData = new byte[1];
@@ -18,6 +18,10 @@ class UDPServer {
         System.out.println("Receiving Data from client... ");
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         serverSocket.receive(receivePacket);
+
+        URL url = new URL("HTTP","localhost","8081","http://localhost:63342/COMP_4320-Group_13/Project/com/ExampleWebPage.html?_ijt=d877oij3mnb144kuhh7f29u8aj");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.getRequestMethod();
 
         String sentence = new String(receivePacket.getData());
         InetAddress IPAddress = receivePacket.getAddress();

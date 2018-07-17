@@ -9,11 +9,12 @@ import java.lang.*;
 
 public class UDPClient {
     public static void main(String args[]) throws Exception {
+
         //Get corruption chance chanceToCorrupt
         double chanceToCorrupt = 0; //temp
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-        DatagramSocket clientSocket = new DatagramSocket(10051);
-        InetAddress IPAddress = InetAddress.getByName("hostname");
+        DatagramSocket clientSocket = new DatagramSocket(8081);
+        InetAddress IPAddress = InetAddress.getByName("localhost");
 
         byte[] sendData = new byte[1024];
         byte[] receiveData = new byte[1024];
@@ -21,9 +22,12 @@ public class UDPClient {
 
         //boolean receiveComplete = false;
         //Sends HTTP connection request to the server.
-        URL url = new URL("http://localhost:63342/COMP_4320-Group_13/Project/com/ExampleWebPage.html?_ijt=d877oij3mnb144kuhh7f29u8aj");
+        System.out.println("Sending HTTP request to Server port...");
+        URL url = new URL("HTTP", "localhost",8080,"ExampleWebPage.html");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET ExampleWebPage.html HTTP/1.0");
+        con.setRequestMethod("GET");// ExampleWebPage.html HTTP/1.0");
+        con.setReadTimeout(15*1000);
+       // con.connect();
 
         // Allows user to send custom message to the server.
         String sentence = inFromUser.readLine();
