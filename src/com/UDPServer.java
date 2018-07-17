@@ -35,20 +35,37 @@ class UDPServer {
 
 
         // This is the packet header. This should turn the String into bytes ready to send via datagram sendPacket
-        String packetHeader = ("http/1.0 200 document follows\r\n " +
+        String docHeader = ("http/1.0 200 document follows\r\n " +
                     "content-type: text/plain \r\n " +
                     "Content Length: 1024 bytes \r\n\r\n" +
                     "Checksum: " + checksum);
-        sendData = packetHeader.getBytes();
+        sendData = docHeader.getBytes();
 
         System.out.println("responding to the clients request...");
 
 
         // Loop that is supposed to split the response packet into 4 and sends back to the client
         int i = 0;
+        String packetHeader = " ";
+        byte[] dataArray = {};
+        int arrayLength;
+        int dataIndex = 0;
          while(i < 4)
          {
              DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length / 4, IPAddress, port);
+             packetHeader = ("Checksum: " + getChecksum(sendPacket));
+             arrayLength = packetHeader.length() + sendPacket.getLength() + 1;
+             dataArray = new byte[arrayLength];
+             for (int j = 0; i < packetHeader.length(); i++) {
+                 dataArray[j] = packetHeader.getBytes()[j];
+             }
+             dataArray[packetHeader.length()] = ' ';
+             dataIndex = 0;
+             for (int j = arrayLength + 1; i < dataArray.length; i++) {
+                 dataArray[j] = sendPacket.getData()[dataIndex];
+                 dataIndex++;
+             }
+             sendPacket.setData(dataArray);
              serverSocket.send(sendPacket);
              getChecksum(sendPacket);
              i++;
@@ -77,19 +94,20 @@ class UDPServer {
         Vector<String> output = new Vector<String>(0);
         try {
             FileInputStream file;
+            file = new FileInputStream(filename);
             try {
-                file = new FileInputStream(filename);
-            } catch (FileNotFoundException fileNotFound) {
+
+                boolean eof = false;
+                int numRead = 0;
+                byte[] currentPacket = {};
+                while (!eof) {
+                    numRead = file.read(currentPacket, 0, 256);
+                    if (numRead < 256) eof = true;
+                    output.add(currentPacket.toString());
+                }
+            }  catch (FileNotFoundException fileNotFound) {
                 System.out.println("Error: file not found.");
                 return null;
-            }
-            boolean eof = false;
-            int numRead = 0;
-            byte[] currentPacket = {};
-            while (!eof) {
-                numRead = file.read(currentPacket, 0, 256);
-                if (numRead < 256) eof = true;
-                output.add(currentPacket.toString());
             }
             output.add("\0"); //add eof null packet
         } catch(IOException ioExcept) {
