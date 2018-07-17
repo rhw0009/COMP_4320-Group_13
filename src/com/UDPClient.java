@@ -9,43 +9,42 @@ import java.lang.*;
 
 public class UDPClient {
     public static void main(String args[]) throws Exception {
-        //Get corruption chance chanceToCorrupt
-        double chanceToCorrupt = 0; //temp
-        BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-        DatagramSocket clientSocket = new DatagramSocket(10051);
-        InetAddress IPAddress = InetAddress.getByName("hostname");
+        //DatagramSocket clientSocket = new DatagramSocket(10051);
+        DatagramSocket clientSocket = new DatagramSocket(8081);
+        InetAddress IPAddress = InetAddress.getByName("localhost");
 
         byte[] sendData = new byte[1024];
         byte[] receiveData = new byte[1024];
-        byte[] receiveEndData = new byte[1];
 
         //boolean receiveComplete = false;
         //Sends HTTP connection request to the server.
-        URL url = new URL("http://localhost:63342/COMP_4320-Group_13/Project/com/ExampleWebPage.html?_ijt=d877oij3mnb144kuhh7f29u8aj");
+        URL url = new URL("HTTP","localhost", 8080, "ExampleWebPage.html");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET ExampleWebPage.html HTTP/1.0");
-
-        // Allows user to send custom message to the server.
-        String sentence = inFromUser.readLine();
-        sendData = sentence.getBytes();
+        //con.setRequestProperty("ExampleWebPage.html", "HTTP/1.0");
+        con.setRequestMethod("GET");
+        int testResponse = con.getResponseCode();
+        System.out.println(testResponse);
 
         System.out.println("Sending request method to server...");
-        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 10048);
-        clientSocket.send(sendPacket);
+        //DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 10048);
+        //clientSocket.send(sendPacket);
 
         Scanner sc = new Scanner(System.in);
-        double corruptionValue;
-        do {
-            System.out.println("Please enter the chance for a packet to be corrupted(Between 0.0 - 1.0: )");
-            while (!sc.hasNextDouble()) {
-                System.out.println("Please Enter An Accepted Value...");
-                sc.next();
+        double chanceToCorrupt = 0;
+        boolean validInput = false;
+        System.out.println("Please enter the chance for a packet to be corrupted (between 0.0 and 1.0)");
+        while (!validInput) {
+            chanceToCorrupt = sc.nextDouble();
+            if (chanceToCorrupt >= 0.0 && chanceToCorrupt <= 1.0) {
+                validInput = true;
             }
-            corruptionValue = sc.nextInt();
-        } while (corruptionValue < 0.0 || corruptionValue > 1.0);
+            else {
+                System.out.println("Please enter a value between 0.0 and 1.0");
+            }
+        }
         System.out.println("Applying corruption to packets...");
 
-        System.out.println(sc.nextLine());
+        //System.out.println(sc.nextLine());
 
 
         //Print send

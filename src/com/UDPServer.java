@@ -7,7 +7,8 @@ import java.util.Vector;
 class UDPServer {
     public static void main(String args[]) throws Exception
     {
-        DatagramSocket serverSocket = new DatagramSocket(10048);
+        //DatagramSocket serverSocket = new DatagramSocket(10048);
+        DatagramSocket serverSocket = new DatagramSocket(8080);
         byte[] receiveData = new byte[1024];
         byte[] sendData  = new byte[1024];
         byte[] endData = new byte[1];
