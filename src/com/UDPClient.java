@@ -94,7 +94,7 @@ public class UDPClient {
         int[] randArray = {0};
         IntStream randStream;
         while (noDuplicates) {
-            randStream = rng.ints(numToCorrupt, 0, packet.getLength());
+            randStream = rng.ints(numToCorrupt, 9, packet.getLength());
             randArray = randStream.toArray();
             for (int i = 0; i < numToCorrupt; i++) {
                 for (int j = i + 1; j < numToCorrupt; j++) {
