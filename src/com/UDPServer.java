@@ -7,56 +7,50 @@ import java.util.Vector;
 class UDPServer {
     public static void main(String args[]) throws IOException
     {
-        DatagramSocket serverSocket = new DatagramSocket(10050);
+
         byte[] receiveData = new byte[1024];
         byte[] sendData  = new byte[1024];
-        byte[] endData = null;
+        byte[] endData = new byte[1];
+        String responseTest = "The string test did show up on the Servers run";
 
+        // Change this when switching to the Tux computers.
+        int serverPort = 8081;
+        DatagramSocket serverSocket = new DatagramSocket(serverPort);
 
         //Should receive the first packet that the client sends
         System.out.println("Waiting on Client to connect... ");
 
+        /* This block is needed to receive readable messages from the client. */
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         serverSocket.receive(receivePacket);
-
-        System.out.println("Receiving Data from client... ");
-        System.out.println(receivePacket.toString());
-
-        //String requestMethod = con.getRequestMethod();
-
-        String sentence = new String(receivePacket.getData());
+        String received = new String(receivePacket.getData(), 0, receivePacket.getLength());
+        System.out.println("Message from client: " + received);
+        int clientPort = receivePacket.getPort();
         InetAddress IPAddress = receivePacket.getAddress();
-
-        // Should print out whatever data the client first sends.
-        System.out.println(receiveData.toString());
-
-        System.out.println("Data received!");
-        int port = receivePacket.getPort();
-
-        URL url = new URL("HTTP","localhost",port,"ExampleWebPage.html");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
 
 
         // This is the packet header. This should turn the String into bytes ready to send via datagram sendPacket
         String docHeader = ("http/1.0 200 document follows\r\n " +
                     "content-type: text/plain \r\n " +
-                    "Content Length: 1024 bytes \r\n\r\n" +
-                    "Checksum: ");
-        sendData = docHeader.getBytes();
+                    "Content Length: " + sendData.length + "\r\n\r\n" +
+                    "Checksum: " + responseTest);
+       sendData = docHeader.getBytes();
+       DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, clientPort);
+       serverSocket.send(sendPacket);
+       System.out.println("Responding to Client with a Header");
 
-        System.out.println("responding to the clients request...");
 
-        // Loop that is supposed to split the response packet into 4 and sends back to the client
-        int i = 0;
+
+
+       /* int i = 0;
         String packetHeader = " ";
         byte[] dataArray = {};
         int arrayLength;
         int dataIndex = 0;
-        System.out.println("Setting the checksum...");
-         while(i < 4)
+
+        while(i < 4)
          {
-             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length / 4, IPAddress, port);
+             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, clientPort);
              packetHeader = ("Checksum: " + getChecksum(sendPacket));
              arrayLength = packetHeader.length() + sendPacket.getLength() + 1;
              dataArray = new byte[arrayLength];
@@ -65,7 +59,7 @@ class UDPServer {
              }
              dataArray[packetHeader.length()] = ' ';
              dataIndex = 0;
-             for (int j = packetHeader.length() + 1; i < dataArray.length; i++) {
+             for (int j = packetHeader.length() - 1; i < dataArray.length; i++) {
                  dataArray[j] = sendPacket.getData()[dataIndex];
                  dataIndex++;
              }
@@ -73,20 +67,15 @@ class UDPServer {
              serverSocket.send(sendPacket);
              getChecksum(sendPacket);
              i++;
-         }
+         }*/
 
 
-            // This is suppose to send At the end of the file,
-            // it transmits 1 byte(NULL character) that indicates the end of the file.
-            // It will then close the file.
-            System.out.println("Sending the Null packet to identify the end of the message...");
-
-
-         DatagramPacket sendEndPacket = new DatagramPacket(endData, endData.length, IPAddress, 10051);
+         DatagramPacket sendEndPacket = new DatagramPacket(endData, endData.length, IPAddress, clientPort);
          serverSocket.send(sendEndPacket);
          serverSocket.close();
 
     }
+
 
     public static int getChecksum(DatagramPacket packet) {
         int checksum = 0;
