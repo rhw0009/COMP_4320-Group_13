@@ -1,10 +1,14 @@
 package com;
 
+import com.sun.deploy.net.HttpResponse;
+import com.sun.deploy.net.MessageHeader;
+
 import java.io.*;
 import java.net.*;
-import java.util.Vector;
+import java.util.*;
 
 class UDPServer {
+
     public static void main(String args[]) throws IOException
     {
 
@@ -19,6 +23,66 @@ class UDPServer {
 
         //Should receive the first packet that the client sends
         System.out.println("Waiting on Client to connect... ");
+
+        /*This is the HttpResponse it should post the webpage to the clients request,
+        * along with a header.*/
+        HttpResponse response = new HttpResponse() {
+            @Override
+            public URL getRequest() {
+                return null;
+            }
+
+            @Override
+            public int getStatusCode() {
+                return 0;
+            }
+
+            @Override
+            public int getContentLength() {
+                return 0;
+            }
+
+            @Override
+            public long getExpiration() {
+                return 0;
+            }
+
+            @Override
+            public long getLastModified() {
+                return 0;
+            }
+
+            @Override
+            public String getContentType() {
+                return null;
+            }
+
+            @Override
+            public String getResponseHeader(String s) {
+                return null;
+            }
+
+            @Override
+            public BufferedInputStream getInputStream() {
+                return null;
+            }
+
+            @Override
+            public void disconnect() {
+
+            }
+
+            @Override
+            public String getContentEncoding() {
+                return null;
+            }
+
+            @Override
+            public MessageHeader getHeaders() {
+                return null;
+            }
+        };
+
 
         /* This block is needed to receive readable messages from the client. */
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);

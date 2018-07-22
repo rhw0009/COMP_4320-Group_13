@@ -1,15 +1,25 @@
 package com;
 
+import com.sun.deploy.net.HttpRequest;
+import com.sun.deploy.net.HttpResponse;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.util.stream.IntStream;
+
 import java.lang.*;
 
 
 
 public class UDPClient {
-    public static void main(String args[]) throws Exception {
+
+    /*May need to change which chrome or mozilla is being used.*/
+    private static final String USER_AGENT = "Chrome/67.0.3396.99";
+    private static final String GET_URL =
+            "http://localhost:63342/COMP_4320-Group_13/Project/com/ExampleWebPage.html?_ijt=1jgbbu4v2fnob572c42brojk7g";
+
+
+    public static void main(String args[]) throws IOException {
 
         byte[] sendData = new byte[1024];
         byte[] receiveData = new byte[1024];
@@ -21,8 +31,63 @@ public class UDPClient {
         String sendTest = "This String should show up in the Servers Run!";
         DatagramSocket clientSocket = new DatagramSocket(clientPort);
 
+        /*This is the HTTP request to the web server.
+         * See the sendGet() method at the bottom of the page.*/
+        HttpRequest request = new HttpRequest() {
+            @Override
+            public HttpResponse doGetRequestEX(URL url, long l) throws IOException {
+                return null;
+            }
+
+            @Override
+            public HttpResponse doGetRequestEX(URL url, String[] strings, String[] strings1, long l) throws IOException {
+                return null;
+            }
+
+            @Override
+            public HttpResponse doHeadRequest(URL url) throws IOException {
+                return null;
+            }
+
+            @Override
+            public HttpResponse doGetRequest(URL url) throws IOException {
+                return null;
+            }
+
+            @Override
+            public HttpResponse doHeadRequest(URL url, boolean b) throws IOException {
+                return null;
+            }
+
+            @Override
+            public HttpResponse doGetRequest(URL url, boolean b) throws IOException {
+                return null;
+            }
+
+            @Override
+            public HttpResponse doHeadRequest(URL url, String[] strings, String[] strings1) throws IOException {
+                return null;
+            }
+
+            @Override
+            public HttpResponse doGetRequest(URL url, String[] strings, String[] strings1) throws IOException {
+                return null;
+            }
+
+            @Override
+            public HttpResponse doHeadRequest(URL url, String[] strings, String[] strings1, boolean b) throws IOException {
+                return null;
+            }
+
+            @Override
+            public HttpResponse doGetRequest(URL url, String[] strings, String[] strings1, boolean b) throws IOException {
+                return null;
+            }
+        };
+
+
         /* This block is needed if you want to send something to
-        * the server!*/
+         * the server!*/
         sendData = sendTest.getBytes();
         DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, serverPort);
         clientSocket.send(sendPacket);
@@ -150,4 +215,6 @@ public class UDPClient {
         }
         return checksum;*/
     }
+
+
 }
