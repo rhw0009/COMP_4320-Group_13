@@ -6,6 +6,8 @@ import com.sun.deploy.net.MessageHeader;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
 
 class UDPServer {
 
@@ -15,6 +17,8 @@ class UDPServer {
         byte[] receiveData = new byte[1024];
         byte[] sendData  = new byte[1024];
         byte[] endData = new byte[1];
+
+
         String responseTest = "The string test did show up on the Servers run";
 
         // Change this when switching to the Tux computers.
@@ -92,16 +96,29 @@ class UDPServer {
         int clientPort = receivePacket.getPort();
         InetAddress IPAddress = receivePacket.getAddress();
 
+        String header = "http/1.0 200 document follows\r\n" +
+                "content-tyoe: text/plain \r\n" +
+                "Content Length: " +
+                "Checksum: ";
+
+
+        //Using the CRC32 we create a checksum and add to the header.
+        Checksum checksum = new CRC32();
+        byte bytes[] = header.getBytes();
+        checksum.update(bytes, 0 ,bytes.length);
+
+        //This string wil allow us to see if the checksum was changed by the gremlin or not.
+        System.out.println("Checksum value is: " + checksum.getValue());
 
         // This is the packet header. This should turn the String into bytes ready to send via datagram sendPacket
         String docHeader = ("http/1.0 200 document follows\r\n " +
                     "content-type: text/plain \r\n " +
-                    "Content Length: " + sendData.length + "\r\n\r\n" +
-                    "Checksum: " + responseTest);
+                    "Content Length: " + bytes.length + "\r\n\r\n" +
+                    "Checksum: " + checksum.getValue());
        sendData = docHeader.getBytes();
        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, clientPort);
        serverSocket.send(sendPacket);
-       System.out.println("Responding to Client with a Header");
+       System.out.println("Responding to Client with a Header and Checksum");
 
 
 

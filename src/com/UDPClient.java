@@ -36,7 +36,7 @@ public class UDPClient {
         HttpRequest request = new HttpRequest() {
             @Override
             public HttpResponse doGetRequestEX(URL url, long l) throws IOException {
-                return null;
+                return;
             }
 
             @Override
