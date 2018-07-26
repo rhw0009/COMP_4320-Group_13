@@ -1,6 +1,5 @@
 package com;
 
-import javax.xml.crypto.Data;
 import java.io.*;
 import java.net.*;
 import java.util.Vector;
@@ -10,7 +9,7 @@ public class UDPServer {
     private static final int CLIENT_PORT = 81;
     private static final int SERVER_PORT = 80;
     private static final String CLIENT_ADDRESS = "localhost";
-    private static final int PACKET_SIZE = 256;
+    private static final int PACKET_SIZE = 512;
     private static final String DOC_HEADER = "HTTP/1.0 200 Document Follows\r\nContent-Type: text/plain\r\nContent-Length: ";
 
     public static void main(String[] args) {
@@ -86,6 +85,13 @@ public class UDPServer {
         }
 
         //receive ACK/NAKs
+        String[] responseList = new String[packetList.size()];
+        byte[] responseBytes = new byte[PACKET_SIZE];
+        DatagramPacket responsePacket = new DatagramPacket(responseBytes, responseBytes.length);
+        for (int i = 0; i < packetList.size(); i++) {
+
+        }
+
         //resend missing packets
     }
 

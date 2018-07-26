@@ -3,8 +3,6 @@ package com;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.util.stream.IntStream;
-import java.lang.*;
 
 public class UDPClient {
 
@@ -12,7 +10,7 @@ public class UDPClient {
     private static final int SERVER_PORT = 80;
     private static final String SERVER_ADDRESS = "localhost";
     private static final String FILENAME = "ExampleWebPage.html";
-    private static final int PACKET_SIZE = 256;
+    private static final int PACKET_SIZE = 512;
 
     public static void main(String[] args) {
         //initialize
@@ -89,10 +87,8 @@ public class UDPClient {
         String packetContent;
         boolean nullPacketReceived = false;
         ListedPacket newPacket;
-        Vector<ListedPacket> packetsReceived = new Vector<>(0);
+        Vector<ListedPacket> packetList = new Vector<>(0);
         int sequenceNum = 0;
-        Random rng = new Random();
-        int rand;
         while (!nullPacketReceived) {
             //receive packet
             try {
@@ -107,36 +103,72 @@ public class UDPClient {
                 System.out.println("End of file reached.");
                 nullPacketReceived = true;
             }
-            else {
-                //extract from header
-                newPacket = new ListedPacket(receivePacket, sequenceNum);
+            //extract from header
+            newPacket = new ListedPacket(receivePacket, sequenceNum);
+            packetList.add(newPacket);
+            sequenceNum++;
+            }
 
-                //gremlin drop
-                rand = rng.nextInt(100);
-                if (rand < chanceToCorrupt * 100) {
-                    //dropped
+        //gremlin
+        packetList = (gremlin(packetList, chanceToDrop, chanceToCorrupt));
+
+        //error detection
+        String[] responseList = new String[packetList.size()];
+        ListedPacket currentPacket;
+        for (int i = 0; i < packetList.size(); i++) {
+            try {
+                currentPacket = packetList.get(i);
+                if (currentPacket.calculatedChecksum == currentPacket.headerChecksum) {
+                    responseList[i] = "ACK" + i;
                 }
-                else {
-
-                }
-
-                //gremlin corrupt
-                rand = rng.nextInt(100);
-                if (rand < chanceToDrop) {
-                    //dropped
-                }
-                else {
-
-                }
-
-                sequenceNum++;
+                else responseList[i] = "NAK" + i;
+            } catch (NullPointerException nullE) {
+                responseList[i] = "";
             }
         }
 
-        //error detection
         //send ACK/NAKs
+        DatagramPacket responsePacket;
+        byte[] responseBytes;
+        for (int i = 0; i < responseList.length; i++) {
+            responseBytes = responseList[i].getBytes();
+            responsePacket = new DatagramPacket(responseBytes, responseBytes.length, serverAddress, SERVER_PORT);
+            try {
+                socket.send(responsePacket);
+            } catch (IOException ioE) {
+                System.out.println("Failed to send ACK/NAK. Exiting.");
+                System.exit(6);
+            }
+        }
+
         //receive missing packets
         //assemble packets
         //print output
+    }
+
+
+
+    public static Vector<ListedPacket> gremlin(Vector<ListedPacket> input, double chanceToDrop, double chanceToCorrupt) {
+        Random rng = new Random();
+        int rand;
+        ListedPacket corruptedPacket;
+        Vector<ListedPacket> output = input;
+        for (int i = 0; i < output.size(); i++) {
+            rand = rng.nextInt(100);
+            if (rand < chanceToDrop * 100) {
+                //drop packet
+                output.set(i, null);
+            }
+            else {
+                rand = rng.nextInt(100);
+                if(rand < chanceToCorrupt) {
+                    //corrupt packet
+                    corruptedPacket = output.get(i);
+                    corruptedPacket.corruptPacket();
+                    output.set(i, corruptedPacket);
+                }
+            }
+        }
+        return output;
     }
 }
