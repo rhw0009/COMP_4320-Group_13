@@ -55,7 +55,7 @@ public class ListedPacket {
                 bytesToCorrupt[j] = rand;
             }
             for (int j = 0; j < bytesToCorrupt.length - 1; j++) {
-                for (int k = j + 1; j < bytesToCorrupt.length; k++) {
+                for (int k = j + 1; k < bytesToCorrupt.length; k++) {
                     if (bytesToCorrupt[j] == bytesToCorrupt[k]) {
                         noDuplicates = false;
                     }
@@ -66,7 +66,7 @@ public class ListedPacket {
             corruptedByte = (byte) (bufferBytes[j] ^ 0b11111111);
             bufferBytes[j] = corruptedByte;
         }
-        setChecksum();
+        this.setChecksum();
     }
 
     private int extractChecksum() {

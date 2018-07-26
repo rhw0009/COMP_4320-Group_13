@@ -120,6 +120,9 @@ public class UDPClient {
         for (int i = 0; i < packetList.size(); i++) {
             try {
                 currentPacket = packetList.get(i);
+                if (currentPacket.headerChecksum != 0) {
+                    currentPacket.headerChecksum = currentPacket.headerChecksum + 10;
+                }
                 if (currentPacket.calculatedChecksum == currentPacket.headerChecksum) {
                     responseList[i] = "ACK" + i;
                 }
@@ -184,7 +187,7 @@ public class UDPClient {
             }
             else {
                 rand = rng.nextInt(100);
-                if(rand < chanceToCorrupt) {
+                if(rand < chanceToCorrupt * 100) {
                     //corrupt packet
                     corruptedPacket = output.get(i);
                     corruptedPacket.corruptPacket();
