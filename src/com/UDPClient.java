@@ -159,6 +159,7 @@ public class UDPClient {
         }
 
         //assemble packets
+        thisiswrong
         System.out.println("Assembling document.");
         for (int i = 0; i < packetList.size(); i++) {
             finalText.concat(packetList.get(i).bufferString);
