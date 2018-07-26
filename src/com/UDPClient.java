@@ -1,8 +1,9 @@
+//Group 13: Montgomery, Wakeford, Williams
+//COMP 4320
 package com;
 
 import com.sun.deploy.net.HttpRequest;
 import com.sun.deploy.net.HttpResponse;
-
 import java.io.*;
 import java.net.*;
 import java.io.BufferedReader;
@@ -24,30 +25,43 @@ public class UDPClient {
 
         byte[] sendData = new byte[1024];
         byte[] receiveData = new byte[1024];
+        String filename;
 
         //Change these variables when wanting to switch to the Tux computers.
         int clientPort = 8080;
         int serverPort = 8081;
         InetAddress IPAddress = InetAddress.getByName("localhost");
         String sendTest = "This String should show up in the Servers Run!";
+
+        filename = GET_URL;
+
+
+
+
         DatagramSocket clientSocket = new DatagramSocket(clientPort);
 
         /*This is the HTTP request to the web server.
-         * See the sendGet() method at the bottom of the page.*/
-        try {
-            System.out.println(getHTTPRequest(args[0]));
-        } catch(Exception e) {
+         *Sending request packet*/
 
-        }
+
+
+            String request = ("GET " + filename + "HTTP/1.0\r\n");
+            byte[] requestPage = new byte[request.length()];
+            requestPage = request.getBytes();
+            DatagramPacket requestPacket = new DatagramPacket(requestPage, requestPage.length, IPAddress, serverPort);
+            clientSocket.send(requestPacket);
+
+
 
         /* This block is needed if you want to send something to
          * the server!*/
         sendData = sendTest.getBytes();
         DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, serverPort);
         clientSocket.send(sendPacket);
-        System.out.println("Sending request method to server...");
+        System.out.println("Sending request method to server...\n\n");
 
         /*This block is needed if you want to receive packets from the server.*/
+        System.out.println("Recieving packets from Server...\n\n ");
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         clientSocket.receive(receivePacket);
         String received = new String(receivePacket.getData(), 0, receivePacket.getLength());
