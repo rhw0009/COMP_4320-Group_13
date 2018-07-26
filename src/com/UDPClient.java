@@ -87,6 +87,7 @@ public class UDPClient {
         String packetContent;
         boolean nullPacketReceived = false;
         ListedPacket newPacket;
+        String displayString;
         Vector<ListedPacket> packetList = new Vector<>(0);
         int sequenceNum = 0;
         while (!nullPacketReceived) {
@@ -94,6 +95,8 @@ public class UDPClient {
             try {
                 receivePacket = new DatagramPacket(bytesIn, bytesIn.length);
                 socket.receive(receivePacket);
+                displayString = new String(receivePacket.getData());
+                System.out.println("Received packet" + sequenceNum + ".\r\n" + displayString);
             } catch(IOException ioE) {
                 System.out.println("Failed to receive packet. Exiting.");
                 System.exit(5);
@@ -112,6 +115,7 @@ public class UDPClient {
             }
 
         //gremlin
+        System.out.println("Applying gremlin algorithm.");
         packetList = (gremlin(packetList, chanceToDrop, chanceToCorrupt));
 
         //error detection

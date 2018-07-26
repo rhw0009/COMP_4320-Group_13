@@ -73,12 +73,15 @@ public class UDPServer {
         }
 
         //send packets
+        String displayString;
         for (int i = 0; i < packetList.size(); i++) {
             packetBytes = packetList.get(i).getBytes();
             packet = new DatagramPacket(packetBytes, packetBytes.length, clientAddress, CLIENT_PORT);
             packet = generateChecksum(packet);
             try{
                 socket.send(packet);
+                displayString = new String(packet.getData());
+                System.out.println("Sent packet " + i + ".\r\n" + displayString);
             } catch(IOException ioE) {
                 System.out.println("Could not send packet to target. Exiting.");
                 System.exit(7);
