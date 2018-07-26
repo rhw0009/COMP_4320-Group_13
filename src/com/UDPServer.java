@@ -129,14 +129,20 @@ public class UDPServer {
     public static DatagramPacket generateChecksum(DatagramPacket input) {
         byte[] bytes = input.getData();
         String bufferString = new String(input.getData());
-        String newString = "";
-        int checksum = 0;
-        for (int i = 0; i < bytes.length; i++) {
-            checksum += bytes[i];
-        }
-        newString = "Checksum: " + checksum + "\r\n" + bufferString;
         DatagramPacket output = input;
-        output.setData(newString.getBytes());
+        if (!bufferString.equals("\0")) {
+            String newString = "";
+            int checksum = 0;
+            for (int i = 0; i < bytes.length; i++) {
+                checksum += bytes[i];
+            }
+            newString = "Checksum: " + checksum + "\r\n" + bufferString;
+            output.setData(newString.getBytes());
+        }
+        else {
+            output.setData("\0".getBytes());
+            output.setLength(1);
+        }
         return output;
     }
 

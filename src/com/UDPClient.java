@@ -83,7 +83,7 @@ public class UDPClient {
 
         //receive packets
         byte[] bytesIn = new byte[PACKET_SIZE];
-        DatagramPacket receivePacket = new DatagramPacket(bytesIn, bytesIn.length);
+        DatagramPacket receivePacket = null;
         String packetContent;
         boolean nullPacketReceived = false;
         ListedPacket newPacket;
@@ -92,6 +92,7 @@ public class UDPClient {
         while (!nullPacketReceived) {
             //receive packet
             try {
+                receivePacket = new DatagramPacket(bytesIn, bytesIn.length);
                 socket.receive(receivePacket);
             } catch(IOException ioE) {
                 System.out.println("Failed to receive packet. Exiting.");
@@ -99,7 +100,7 @@ public class UDPClient {
             }
             //check for null packet (eof)
             packetContent = new String(receivePacket.getData());
-            if (packetContent.equals("\0")) {
+            if (packetContent.equals("\0") | (!packetContent.startsWith("C"))) {
                 System.out.println("End of file reached.");
                 nullPacketReceived = true;
             }
