@@ -6,9 +6,9 @@ import java.util.Vector;
 
 public class UDPServer {
 
-    private static final int CLIENT_PORT = 81;
-    private static final int SERVER_PORT = 80;
-    private static final String CLIENT_ADDRESS = "localhost";
+    private static final int CLIENT_PORT = 10048;
+    private static final int SERVER_PORT = 10050;
+    private static final String CLIENT_ADDRESS = "131.204.14.59";
     private static final int PACKET_SIZE = 512;
     private static final String DOC_HEADER = "HTTP/1.0 200 Document Follows\r\nContent-Type: text/plain\r\nContent-Length: ";
     private static final int RESERVED_SPACE = 30;

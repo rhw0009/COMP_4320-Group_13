@@ -6,9 +6,9 @@ import java.util.*;
 
 public class UDPClient {
 
-    private static final int CLIENT_PORT = 81;
-    private static final int SERVER_PORT = 80;
-    private static final String SERVER_ADDRESS = "localhost";
+    private static final int CLIENT_PORT = 10048;
+    private static final int SERVER_PORT = 10050;
+    private static final String SERVER_ADDRESS = "131.204.14.55";
     private static final String FILENAME = "ExampleWebPage.html";
     private static final int PACKET_SIZE = 512;
 
