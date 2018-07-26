@@ -11,6 +11,7 @@ public class UDPServer {
     private static final String CLIENT_ADDRESS = "localhost";
     private static final int PACKET_SIZE = 512;
     private static final String DOC_HEADER = "HTTP/1.0 200 Document Follows\r\nContent-Type: text/plain\r\nContent-Length: ";
+    private static final int RESERVED_SPACE = 30;
 
     public static void main(String[] args) {
         //initialize
@@ -134,8 +135,13 @@ public class UDPServer {
             for (int i = 0; i < bytes.length; i++) {
                 checksum += bytes[i];
             }
-            newString = "Checksum: " + checksum + "\r\n" + bufferString;
+            newString = "Checksum: " + checksum + "\r\n";
+            for (int i = newString.length(); i < RESERVED_SPACE; i++) {
+                newString = newString + "\0";
+            }
+            newString = newString + bufferString;
             output.setData(newString.getBytes());
+            output.setLength(PACKET_SIZE);
         }
         else {
             output.setData("\0".getBytes());
@@ -154,7 +160,7 @@ public class UDPServer {
             System.exit(3);
         }
         boolean eof = false;
-        byte[] currentPacket = new byte[PACKET_SIZE];
+        byte[] currentPacket = new byte[PACKET_SIZE - RESERVED_SPACE];
         String currentPacketString;
         try {
             while (!eof) {
