@@ -142,8 +142,29 @@ public class UDPClient {
         }
 
         //receive missing packets
+        ListedPacket fixedPacket;
+        DatagramPacket receiveFixed = new DatagramPacket(bytesIn, bytesIn.length);
+        for (int i = 0; i < responseList.length; i++) {
+            if (!responseList[i].startsWith("A")) {
+                try {
+                    socket.receive(receiveFixed);
+                } catch (IOException ioE) {
+                    System.out.println("Failed to receive resent packet. Exiting.");
+                    System.exit(7);
+                }
+                fixedPacket = new ListedPacket(receiveFixed, i);
+                packetList.set(i, fixedPacket);
+            }
+        }
+
         //assemble packets
+        System.out.println("Assembling document.");
+        for (int i = 0; i < packetList.size(); i++) {
+            finalText.concat(packetList.get(i).bufferString);
+        }
+
         //print output
+        System.out.println("Printing document.\r\n\n");
     }
 
 

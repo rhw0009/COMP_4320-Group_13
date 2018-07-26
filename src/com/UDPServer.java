@@ -89,6 +89,7 @@ public class UDPServer {
         String currentResponse;
         byte[] responseBytes = new byte[PACKET_SIZE];
         DatagramPacket responsePacket = new DatagramPacket(responseBytes, responseBytes.length);
+        DatagramPacket resendPacket;
         for (int i = 0; i < responseList.length; i++) {
             try {
                 socket.receive(responsePacket);
@@ -98,9 +99,28 @@ public class UDPServer {
             }
             currentResponse = new String(responsePacket.getData());
             responseList[i] = currentResponse;
+            if (!currentResponse.isEmpty()) {
+                System.out.println("Received " + currentResponse);
+            }
+            else {
+                System.out.println("Packet " + i + " timed out.");
+            }
+            //resend missing packets
+            if (!currentResponse.startsWith("A")) {
+                packetBytes = packetList.get(i).getBytes();
+                resendPacket = new DatagramPacket(packetBytes, packetBytes.length, clientAddress, CLIENT_PORT);
+                System.out.println("Resending packet " + i + ".");
+                try {
+                    socket.send(resendPacket);
+                } catch (IOException ioE) {
+                    System.out.println("Failed to resend packet. Exiting.");
+                    System.exit(9);
+                }
+            }
         }
 
-        //resend missing packets
+
+
     }
 
 
