@@ -162,11 +162,11 @@ public class UDPClient {
         //assemble packets
         System.out.println("Assembling document.");
         for (int i = 0; i < packetList.size(); i++) {
-            finalText.concat(packetList.get(i).bufferString);
+            finalText = finalText + packetList.get(i).bufferString;
         }
 
         //print output
-        System.out.println("Printing document.\r\n\n");
+        System.out.println("Printing document.\r\n\n" + finalText);
     }
 
 
