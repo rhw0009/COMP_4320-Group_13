@@ -11,9 +11,9 @@ import java.util.zip.Checksum;
 class UDPServer {
 
 
-    static InetAddress IPAddress;       //This will be pulled fromt the received datagram.
+    static InetAddress IPAddress;       //This will be pulled from the received datagram.
     static int clientPort;              // This will be pulled from the received datagram.
-    final static int serverPort = 8081; // change this when switching to the tux computers. Our ports are 10048 - 10051.
+    final static int serverPort = 8082; // change this when switching to the tux computers. Our ports are 10048 - 10051.
     final static int TIMEOUT = 40;      //Timeout is 40 milliseconds, 4 times the assumed RTT.
     final static int ACK = 1;
     final static int NAK = 0;
@@ -88,13 +88,6 @@ class UDPServer {
     }
 
 
-    public static int getChecksum(DatagramPacket packet) {
-        int checksum = 0;
-        for (int i = 0; i < packet.getLength(); i++) {
-            checksum += packet.getData()[i];
-        }
-        return checksum;
-    }
 
     public static Vector<String> generatePackets(String filename) {
         Vector<String> output = new Vector<String>(0);
