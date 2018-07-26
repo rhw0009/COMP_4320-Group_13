@@ -1,3 +1,9 @@
+/*Montgomery, Wakeford, Williams
+ * Group 13
+ * COMP 4320
+ * Project 2
+ * */
+
 package com;
 
 import java.io.*;
@@ -6,8 +12,8 @@ import java.util.*;
 
 public class UDPClient {
 
-    private static final int CLIENT_PORT = 81;
-    private static final int SERVER_PORT = 80;
+    private static final int CLIENT_PORT = 81;      //Will need to change when switching to Tux Computers. Our ports are 10048-10051
+    private static final int SERVER_PORT = 80;      //Will need to change when switching to Tux Computers.
     private static final String SERVER_ADDRESS = "localhost";
     private static final String FILENAME = "ExampleWebPage.html";
     private static final int PACKET_SIZE = 512;
@@ -31,6 +37,7 @@ public class UDPClient {
             System.exit(2);
         }
 
+        System.out.println("Sending 'GET' request to the Server...\r\n");
         DatagramPacket request = new DatagramPacket(requestBuffer.getBytes(), requestBuffer.length(), serverAddress, SERVER_PORT);
         Scanner sc = new Scanner(System.in);
         double chanceToCorrupt = 0;
@@ -38,18 +45,20 @@ public class UDPClient {
         System.out.println("Please enter the chance for a packet to be corrupted as a value between 0.0 and 1.0:");
         boolean validInput = false;
         while (!validInput) {
-            chanceToCorrupt = sc.nextDouble();
+                chanceToCorrupt = sc.nextDouble();
+
             if (chanceToCorrupt >= 0 && chanceToCorrupt <= 1) {
                 validInput = true;
             }
             else {
-                System.out.println("Invalid input; please enter a value between 0.0 and 1.0:");
+                System.out.println("Invalid input, please enter a value between 0.0 and 1.0:");
             }
         }
         System.out.println("Please enter the chance for a packet to be dropped as a value between 0.0 and 1.0:");
         validInput = false;
         while (!validInput) {
-            chanceToDrop = sc.nextDouble();
+                chanceToDrop = sc.nextDouble();
+
             if (chanceToDrop >= 0 && chanceToDrop <= 1) {
                 validInput = true;
             }

@@ -1,3 +1,9 @@
+/*Montgomery, Wakeford, Williams
+* Group 13
+* COMP 4320
+* Project 2
+* */
+
 package com;
 
 import java.io.*;
@@ -6,8 +12,8 @@ import java.util.Vector;
 
 public class UDPServer {
 
-    private static final int CLIENT_PORT = 81;
-    private static final int SERVER_PORT = 80;
+    private static final int CLIENT_PORT = 81;      //Will need to change when switching to Tux Computers. Our ports are 10048-10051
+    private static final int SERVER_PORT = 80;      //Will need to change when switching to Tux Computers.
     private static final String CLIENT_ADDRESS = "localhost";
     private static final int PACKET_SIZE = 512;
     private static final String DOC_HEADER = "HTTP/1.0 200 Document Follows\r\nContent-Type: text/plain\r\nContent-Length: ";
@@ -25,7 +31,7 @@ public class UDPServer {
         byte[] requestBytes = new byte[PACKET_SIZE];
         DatagramPacket request = new DatagramPacket(requestBytes, requestBytes.length);
 
-        //receive request
+        // Should receive request using the filename and a try and catch block.
         String filename = "";
         try {
             System.out.println("Awaiting request.");
@@ -38,7 +44,7 @@ public class UDPServer {
             System.exit(2);
         }
 
-        //find file
+        //Searches for the file.
         filename = filename.split(" ")[1];
 
         //generate packets
@@ -123,9 +129,8 @@ public class UDPServer {
 
     }
 
-
-
-
+    /* This method will create the checksum that in order to error check
+    * the packets.*/
     public static DatagramPacket generateChecksum(DatagramPacket input) {
         byte[] bytes = input.getData();
         String bufferString = new String(input.getData());
@@ -140,6 +145,7 @@ public class UDPServer {
         return output;
     }
 
+    /*This method will create the packets of size 512 bytes.*/
     public static Vector<String> generatePackets(String filename) {
         Vector<String> output = new Vector<String>(0);
         FileInputStream file = null;
