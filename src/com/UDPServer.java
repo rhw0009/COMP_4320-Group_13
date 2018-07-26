@@ -2,10 +2,12 @@ package com;
 
 import com.sun.deploy.net.HttpResponse;
 import com.sun.deploy.net.MessageHeader;
+import sun.net.www.http.HttpClient;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
+
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
@@ -28,66 +30,6 @@ class UDPServer {
         //Should receive the first packet that the client sends
         System.out.println("Waiting on Client to connect... ");
 
-        /*This is the HttpResponse it should post the webpage to the clients request,
-        * along with a header.*/
-        HttpResponse response = new HttpResponse() {
-            @Override
-            public URL getRequest() {
-                return null;
-            }
-
-            @Override
-            public int getStatusCode() {
-                return 0;
-            }
-
-            @Override
-            public int getContentLength() {
-                return 0;
-            }
-
-            @Override
-            public long getExpiration() {
-                return 0;
-            }
-
-            @Override
-            public long getLastModified() {
-                return 0;
-            }
-
-            @Override
-            public String getContentType() {
-                return null;
-            }
-
-            @Override
-            public String getResponseHeader(String s) {
-                return null;
-            }
-
-            @Override
-            public BufferedInputStream getInputStream() {
-                return null;
-            }
-
-            @Override
-            public void disconnect() {
-
-            }
-
-            @Override
-            public String getContentEncoding() {
-                return null;
-            }
-
-            @Override
-            public MessageHeader getHeaders() {
-                return null;
-            }
-        };
-
-
         /* This block is needed to receive readable messages from the client. */
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         serverSocket.receive(receivePacket);
@@ -97,6 +39,7 @@ class UDPServer {
         InetAddress IPAddress = receivePacket.getAddress();
 
         String header = "http/1.0 200 document follows\r\n" +
+                "Sequence number of Packet: \r\n" +
                 "content-tyoe: text/plain \r\n" +
                 "Content Length: " +
                 "Checksum: ";
@@ -109,18 +52,31 @@ class UDPServer {
 
         //This string wil allow us to see if the checksum was changed by the gremlin or not.
         System.out.println("Checksum value is: " + checksum.getValue());
+        String data = "Hello World!!!";
 
-        // This is the packet header. This should turn the String into bytes ready to send via datagram sendPacket
-        String docHeader = ("http/1.0 200 document follows\r\n " +
+
+
+        for(int i = 0; i < 4; i++)
+        {
+
+            // This is the packet header. This should turn the String into bytes ready to send via datagram sendPacket
+            String docHeader = ("http/1.0 200 document follows\r\n " +
+                    "Sequence number of Packet: " + i + "\n\r" +
                     "content-type: text/plain \r\n " +
                     "Content Length: " + bytes.length + "\r\n\r\n" +
-                    "Checksum: " + checksum.getValue());
-       sendData = docHeader.getBytes();
-       DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, clientPort);
-       serverSocket.send(sendPacket);
-       System.out.println("Responding to Client with a Header and Checksum");
+                    "Checksum: " + checksum.getValue() +
+                    "\r\n" + data);
+            try {
+              System.out.println(postHttpRequest(args[0]));
+            } catch (Exception e) {
 
+            }
+            sendData = docHeader.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, clientPort);
+            serverSocket.send(sendPacket);
 
+        }
+        System.out.println("Responding to Client with a Header and Checksum");
 
 
        /* int i = 0;
@@ -154,6 +110,24 @@ class UDPServer {
          DatagramPacket sendEndPacket = new DatagramPacket(endData, endData.length, IPAddress, clientPort);
          serverSocket.send(sendEndPacket);
          serverSocket.close();
+
+    }
+
+    private static String postHttpRequest(String urlToPost) throws Exception {
+
+        StringBuilder result = new StringBuilder();
+        URL url = new URL (urlToPost);
+        HttpURLConnection con = (HttpURLConnection)url.openConnection();
+        con.setRequestMethod("POST");
+        BufferedReader read = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String data = "Hello World!!!";
+
+        while ((data = read.readLine()) != null)
+        {
+            result.append(data);
+        }
+        read.close();
+        return result.toString();
 
     }
 

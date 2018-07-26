@@ -5,6 +5,7 @@ import com.sun.deploy.net.HttpResponse;
 
 import java.io.*;
 import java.net.*;
+import java.io.BufferedReader;
 import java.util.*;
 
 import java.lang.*;
@@ -33,58 +34,11 @@ public class UDPClient {
 
         /*This is the HTTP request to the web server.
          * See the sendGet() method at the bottom of the page.*/
-        HttpRequest request = new HttpRequest() {
-            @Override
-            public HttpResponse doGetRequestEX(URL url, long l) throws IOException {
-                return;
-            }
+        try {
+            System.out.println(getHTTPRequest(args[0]));
+        } catch(Exception e) {
 
-            @Override
-            public HttpResponse doGetRequestEX(URL url, String[] strings, String[] strings1, long l) throws IOException {
-                return null;
-            }
-
-            @Override
-            public HttpResponse doHeadRequest(URL url) throws IOException {
-                return null;
-            }
-
-            @Override
-            public HttpResponse doGetRequest(URL url) throws IOException {
-                return null;
-            }
-
-            @Override
-            public HttpResponse doHeadRequest(URL url, boolean b) throws IOException {
-                return null;
-            }
-
-            @Override
-            public HttpResponse doGetRequest(URL url, boolean b) throws IOException {
-                return null;
-            }
-
-            @Override
-            public HttpResponse doHeadRequest(URL url, String[] strings, String[] strings1) throws IOException {
-                return null;
-            }
-
-            @Override
-            public HttpResponse doGetRequest(URL url, String[] strings, String[] strings1) throws IOException {
-                return null;
-            }
-
-            @Override
-            public HttpResponse doHeadRequest(URL url, String[] strings, String[] strings1, boolean b) throws IOException {
-                return null;
-            }
-
-            @Override
-            public HttpResponse doGetRequest(URL url, String[] strings, String[] strings1, boolean b) throws IOException {
-                return null;
-            }
-        };
-
+        }
 
         /* This block is needed if you want to send something to
          * the server!*/
@@ -216,5 +170,24 @@ public class UDPClient {
         return checksum;*/
     }
 
+    private static String getHTTPRequest(String urlToRead) throws Exception {
 
-}
+        StringBuilder result = new StringBuilder();
+        URL url = new URL (urlToRead);
+        HttpURLConnection con = (HttpURLConnection)url.openConnection();
+        con.setRequestMethod("GET");
+        BufferedReader read = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String line;
+
+        while ((line = read.readLine()) != null)
+        {
+            result.append(line);
+        }
+        read.close();
+        return result.toString();
+
+        }
+
+    }
+
+
