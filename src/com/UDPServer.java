@@ -86,10 +86,18 @@ public class UDPServer {
 
         //receive ACK/NAKs
         String[] responseList = new String[packetList.size()];
+        String currentResponse;
         byte[] responseBytes = new byte[PACKET_SIZE];
         DatagramPacket responsePacket = new DatagramPacket(responseBytes, responseBytes.length);
-        for (int i = 0; i < packetList.size(); i++) {
-
+        for (int i = 0; i < responseList.length; i++) {
+            try {
+                socket.receive(responsePacket);
+            } catch (IOException ioE) {
+                System.out.println("Failed to receive response. Exiting.");
+                System.exit(8);
+            }
+            currentResponse = new String(responsePacket.getData());
+            responseList[i] = currentResponse;
         }
 
         //resend missing packets
