@@ -99,7 +99,7 @@ public class UDPServer {
             }
             currentResponse = new String(responsePacket.getData());
             responseList[i] = currentResponse;
-            if (!currentResponse.isEmpty()) {
+            if (!currentResponse.startsWith("\0")) {
                 System.out.println("Received " + currentResponse);
             }
             else {
