@@ -100,7 +100,8 @@ public class UDPClient {
             }
             //check for null packet (eof)
             packetContent = new String(receivePacket.getData());
-            if (packetContent.equals("\0") | (!packetContent.startsWith("C"))) {
+            if (packetContent.startsWith("\0")) {
+                receivePacket = new DatagramPacket("\0".getBytes(), 1);
                 System.out.println("End of file reached.");
                 nullPacketReceived = true;
             }

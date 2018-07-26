@@ -18,8 +18,13 @@ public class ListedPacket {
         bufferBytes = original.getData();
         bufferString = new String(bufferBytes);
         headerRemoved = false;
-        headerChecksum = extractChecksum();
-        bufferString = removeHeader(bufferString);
+        if (!bufferString.startsWith("\0")) {
+            headerChecksum = extractChecksum();
+            bufferString = removeHeader(bufferString);
+        }
+        else {
+            headerChecksum = 0;
+        }
         headerRemoved = true;
         bufferBytes = bufferString.getBytes();
         setChecksum();

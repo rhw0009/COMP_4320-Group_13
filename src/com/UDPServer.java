@@ -111,6 +111,7 @@ public class UDPServer {
                 resendPacket = new DatagramPacket(packetBytes, packetBytes.length, clientAddress, CLIENT_PORT);
                 System.out.println("Resending packet " + i + ".");
                 try {
+                    resendPacket = generateChecksum(resendPacket);
                     socket.send(resendPacket);
                 } catch (IOException ioE) {
                     System.out.println("Failed to resend packet. Exiting.");
@@ -118,9 +119,6 @@ public class UDPServer {
                 }
             }
         }
-
-
-
     }
 
 
